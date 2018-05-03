@@ -14,7 +14,7 @@ public class Server {
 
 
 	public static void main(String[] args) {
-		salas.add(new Sala(0,"Default","235.0.0.1",10));
+		salas.add(new Sala(0,"Default","235.0.0.1",10,4453));
 		try {
 			ServerSocket serversocket = new ServerSocket(portaserver);
 			 System.out.println("Servidor ativo");

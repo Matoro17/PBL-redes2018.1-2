@@ -7,11 +7,12 @@ public class Sala {
 	private int quantidade, limite;
 	
 	
-	public Sala(int id,String ip, String nome, int limite){
+	public Sala(int id,String ip, String nome, int limite, int port){
 		this.Id = id;
 		this.ip = ip;
 		this.nome = nome;
 		this.limite = limite;
+		this.porta = port;
 	}
 	
 	public String getTudo(){
