@@ -47,10 +47,18 @@ public class Clientframe extends JFrame {
 	private JLabel lblPorta;
 	private JButton btnConectar;
 	private JLabel lblPlayers;
-	private final Action action_1 = new SwingAction_1();
-	
+	private final Action action_1 = new SwingAction();
+	private final Action action_2 = new Changescreen();
 	public String[] listadesalas;
+	private JTextField textFieldmen;
+	private final Action Sendmensage = new Sendmensage();
 	
+	private JPanel peinalmen;
+	private JLabel mensagem;
+	private JButton btnSend;
+	private JLabel coming;
+	private JLabel titulo;
+	private JButton btnEntrar;
 	/**
 	 * Launch the application.
 	 */
@@ -82,10 +90,6 @@ public class Clientframe extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(511, 13, -274, 277);
-		contentPane.add(scrollPane);
-		
 		txtIpServidor = new JTextField();
 		txtIpServidor.setText("Ip Servidor");
 		txtIpServidor.setBounds(48, 259, 227, 37);
@@ -98,10 +102,10 @@ public class Clientframe extends JFrame {
 		contentPane.add(txtPorta);
 		txtPorta.setColumns(10);
 		
-		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblLogin.setBounds(48, 152, 227, 37);
-		contentPane.add(lblLogin);
+		titulo = new JLabel("Login");
+		titulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		titulo.setBounds(48, 152, 227, 37);
+		contentPane.add(titulo);
 		
 		txtNome = new JTextField();
 		txtNome.setText("Nome");
@@ -109,7 +113,7 @@ public class Clientframe extends JFrame {
 		contentPane.add(txtNome);
 		txtNome.setColumns(10);
 		
-		JButton btnEntrar = new JButton("Entrar");
+		btnEntrar = new JButton("Entrar");
 		btnEntrar.setAction(action);
 		btnEntrar.setBounds(113, 359, 97, 25);
 		contentPane.add(btnEntrar);
@@ -161,9 +165,34 @@ public class Clientframe extends JFrame {
 		panel_3.add(lblPlayers);
 		
 		btnConectar = new JButton("Conectar");
-		btnConectar.setAction(action_1);
+		btnConectar.setAction(action_2);
 		panel_3.add(btnConectar);
 		panel_3.setVisible(false);
+		
+		peinalmen = new JPanel();
+		peinalmen.setBounds(10, 11, 794, 544);
+		contentPane.add(peinalmen);
+		peinalmen.setLayout(null);
+		
+		mensagem = new JLabel("text");
+		mensagem.setBounds(30, 27, 46, 14);
+		peinalmen.add(mensagem);
+		
+		textFieldmen = new JTextField();
+		textFieldmen.setBounds(31, 46, 86, 20);
+		peinalmen.add(textFieldmen);
+		textFieldmen.setColumns(10);
+		
+		btnSend = new JButton("send");
+		btnSend.setAction(Sendmensage);
+		btnSend.setBounds(34, 77, 89, 23);
+		peinalmen.add(btnSend);
+		
+		coming = new JLabel("New label");
+		coming.setBounds(161, 31, 46, 14);
+		peinalmen.add(coming);
+		peinalmen.setVisible(false);
+		
 		
 	}
 	
@@ -218,15 +247,17 @@ public class Clientframe extends JFrame {
 			
 		}
 	}
-	private class SwingAction_1 extends AbstractAction {
-		public SwingAction_1() {
-			putValue(NAME, "conectar");
+	
+	
+	private class Sendmensage extends AbstractAction {
+		public Sendmensage() {
+			putValue(NAME, "send");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
 			
 			try {
-			 String msg = "Hello";
+			 String msg = textFieldmen.getText();
 			 InetAddress group = InetAddress.getByName(lblIp.getText());
 			 MulticastSocket s = new MulticastSocket(Integer.parseInt(lblPorta.getText()));
 			 s.joinGroup(group);
@@ -244,6 +275,30 @@ public class Clientframe extends JFrame {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+	}
+	private class Changescreen extends AbstractAction {
+		public Changescreen() {
+			putValue(NAME, "SwingAction_1");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			lblId.setVisible(false);
+			panel.setVisible(false);
+			txtNome.setVisible(false);
+			txtPorta.setVisible(false);
+			txtIpServidor.setVisible(false);
+			titulo.setVisible(false);
+			btnEntrar.setVisible(false);
+			
+			peinalmen.setVisible(true);
+			mensagem.setVisible(true);
+			textFieldmen.setVisible(true);
+			btnSend.setVisible(true);
+			coming.setVisible(true);
+			
+			
+			
 		}
 	}
 }
