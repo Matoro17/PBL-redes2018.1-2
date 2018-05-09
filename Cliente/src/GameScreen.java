@@ -1,25 +1,45 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import net.miginfocom.swing.MigLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JTextPane;
 
 public class GameScreen extends JFrame {
 	private JButton[] btnNewButton;
-	
+	private static HashMap<Integer, String> dicionario;
 	private JPanel contentPane;
+	private static int pontuacao;
+	private static ArrayList<String> escolidas;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		pontuacao = 0;
+		dicionario = new HashMap<>();
+		escolidas = new ArrayList<>();
+		carregardicionario();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -36,6 +56,7 @@ public class GameScreen extends JFrame {
 	 * Create the frame.
 	 */
 	public GameScreen() {
+		
 		Dimension buto = new Dimension(50, 50);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -44,14 +65,14 @@ public class GameScreen extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.EAST);
+		JPanel Dices = new JPanel();
+		contentPane.add(Dices, BorderLayout.CENTER);
 		
 		JLabel palavra = new JLabel("");
 		
 		
 		JPanel panel_2 = new JPanel();
-		panel.add(panel_2);
+		Dices.add(panel_2);
 		panel_2.setLayout(new GridLayout(4, 4, 0, 0));
 
 		btnNewButton = new JButton[16];
@@ -69,18 +90,64 @@ public class GameScreen extends JFrame {
 			panel_2.add(btnNewButton[j]);
 		}
 
-		JPanel panel_1 = new JPanel();
-		contentPane.add(panel_1, BorderLayout.SOUTH);
-		panel_1.add(palavra);
+		JPanel Checkpanel = new JPanel();
+		contentPane.add(Checkpanel, BorderLayout.SOUTH);
+		Checkpanel.add(palavra);
 		
+		JPanel Players = new JPanel();
+		contentPane.add(Players, BorderLayout.WEST);
+		
+		JPanel panel_1 = new JPanel();
+		contentPane.add(panel_1, BorderLayout.NORTH);
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 1));
+		
+		JLabel player = new JLabel("Player: ");
+		panel_1.add(player);
+		
+		JLabel potnuacao = new JLabel("Pontua\u00E7\u00E3o: ");
+		panel_1.add(potnuacao);
+		
+		JLabel points = new JLabel("");
+		panel_1.add(points);
+		
+		JPanel Words = new JPanel();
+		contentPane.add(Words, BorderLayout.EAST);
+		Words.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JTextPane wordspoints = new JTextPane();
+		Words.add(wordspoints);
+		wordspoints.setText("Words");
 		
 		JButton send = new JButton("Enviar");
 		send.addActionListener(l -> {
 			System.out.println(palavra.getText());
-			palavra.setText("");
+			if(checkword(palavra.getText().toLowerCase())) {
+				System.out.println("palavra existe");
+				if(checkrepete(palavra.getText())) {
+					System.out.println("ja inserida");
+					palavra.setText("ja inserida");
+					
+					palavra.setText("");
+				}else {
+					escolidas.add(palavra.getText());
+					wordspoints.setText(wordspoints.getText()+"\n"+palavra.getText());
+					pontuacao = pontuacao + palavra.getText().length();
+					points.setText(pontuacao +"pontos");
+					palavra.setText("");
+				}
+			}
+			else {
+				
+				palavra.setText("Não existe");
+				
+				palavra.setText("");
+			}
+			
 			resetbtns();
 		});;
-		panel_1.add(send);
+		Checkpanel.add(send);
+		
+		
 	}
 	
 	void resetbtns() {
@@ -88,5 +155,37 @@ public class GameScreen extends JFrame {
 			btnNewButton[i].setEnabled(true);
 		}
 	}
-
+	
+	public boolean checkrepete(String palavra) {
+		return escolidas.contains(palavra);
+	}
+	
+	public boolean checkword(String palavra) {
+		return dicionario.containsValue(palavra);
+	}
+	
+	public static void carregardicionario() {
+	    String nome = "dictionary.txt";
+	    
+	    try {
+	      FileReader arq = new FileReader(nome);
+	      BufferedReader lerArq = new BufferedReader(arq);
+	 
+	      String linha = lerArq.readLine(); // lê a primeira linha
+	// a variável "linha" recebe o valor "null" quando o processo
+	// de repetição atingir o final do arquivo texto
+	      Integer count = 0;
+	      while (linha != null) {
+	        dicionario.put(count, linha);
+	        count++;
+	 
+	        linha = lerArq.readLine(); // lê da segunda até a última linha
+	      }
+	 
+	      arq.close();
+	    } catch (IOException e) {
+	        System.err.printf("Erro na abertura do arquivo: %s.\n",
+	          e.getMessage());
+	    }
+	}
 }
