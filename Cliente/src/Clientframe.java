@@ -163,10 +163,7 @@ public class Clientframe extends JFrame {
 		
 		lblPlayers = new JLabel("players");
 		panel_3.add(lblPlayers);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 407647e... commit do pc
+
 		
 		btnConectar = new JButton("Conectar");
 		btnConectar.setAction(action_2);
@@ -187,8 +184,7 @@ public class Clientframe extends JFrame {
 		peinalmen.add(textFieldmen);
 		textFieldmen.setColumns(10);
 		
-<<<<<<< HEAD
-=======
+
 		
 		btnConectar = new JButton("Conectar");
 		btnConectar.setAction(action_2);
@@ -209,9 +205,7 @@ public class Clientframe extends JFrame {
 		peinalmen.add(textFieldmen);
 		textFieldmen.setColumns(10);
 		
->>>>>>> parent of 407647e... commit do pc
-=======
->>>>>>> parent of 407647e... commit do pc
+
 		btnSend = new JButton("send");
 		btnSend.setAction(Sendmensage);
 		btnSend.setBounds(34, 77, 89, 23);
