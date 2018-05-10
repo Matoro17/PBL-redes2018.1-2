@@ -133,64 +133,64 @@ public class Clientframe extends JFrame {
 	 * Create the frame.
 	 */
 	public Clientframe() {
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 830, 605);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		txtIpServidor = new JTextField();
 		txtIpServidor.setText("Ip Servidor");
 		txtIpServidor.setBounds(48, 259, 227, 37);
 		contentPane.add(txtIpServidor);
 		txtIpServidor.setColumns(10);
-		
+
 		txtPorta = new JTextField();
 		txtPorta.setText("Porta");
 		txtPorta.setBounds(48, 309, 227, 37);
 		contentPane.add(txtPorta);
 		txtPorta.setColumns(10);
-		
+
 		titulo = new JLabel("Login");
 		titulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		titulo.setBounds(48, 152, 227, 37);
 		contentPane.add(titulo);
-		
+
 		txtNome = new JTextField();
 		txtNome.setText("Nome");
 		txtNome.setBounds(48, 209, 227, 37);
 		contentPane.add(txtNome);
 		txtNome.setColumns(10);
-		
+
 		btnEntrar = new JButton("Entrar");
 		btnEntrar.setAction(ServerLists);
 		btnEntrar.setBounds(113, 359, 97, 25);
 		contentPane.add(btnEntrar);
-		
+
 		panel = new JPanel();
 		panel.setBounds(340, 93, 447, 421);
 		contentPane.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		panel_1 = new JPanel();
 		panel_1.setBackground(Color.GRAY);
 		panel.add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(null);
-		
+
 		lblServers = new JLabel("Servers");
 		lblServers.setBounds(12, 5, 106, 16);
 		panel_1.add(lblServers);
-		
+
 		lblIpUdp = new JLabel("Ip UDP");
 		lblIpUdp.setBounds(130, 5, 137, 16);
 		panel_1.add(lblIpUdp);
-		
+
 		lblNewLabel = new JLabel("porta");
 		lblNewLabel.setBounds(243, 5, 56, 16);
 		panel_1.add(lblNewLabel);
-		
+
 		panel_2 = new JPanel();
 		panel_2.setBackground(Color.LIGHT_GRAY);
 		panel_2.setBounds(12, 34, 423, 374);
@@ -210,13 +210,15 @@ public class Clientframe extends JFrame {
 			putValue(NAME, "Enviado");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			try {
+				
 				socket = new Socket(txtIpServidor.getText(), Integer.parseInt(txtPorta.getText()));
-				
+
 				input = new DataInputStream(socket.getInputStream());
-				output =  new DataOutputStream(socket.getOutputStream());
-				
+				output = new DataOutputStream(socket.getOutputStream());
+
 				setNome(txtNome.getText());
 				String lista;
 				lista = input.readUTF();
@@ -255,7 +257,7 @@ public class Clientframe extends JFrame {
 					lblId.setText(part[0]);
 					lblIp.setText(part[1]);
 					lblNome.setText(part[2]);
-					lblPlayers.setText(part[3]+"/"+part[4]);
+					lblPlayers.setText(part[3] + "/" + part[4]);
 					lblPorta.setText(part[5]);
 					
 					peinalmen = new JPanel();
@@ -284,11 +286,7 @@ public class Clientframe extends JFrame {
 					
 					Roomlist[i].setVisible(true);
 				}
-				
-				
-				
-				
-				
+
 			} catch (NumberFormatException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -299,11 +297,10 @@ public class Clientframe extends JFrame {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 		}
 	}
-	
-	
+
 	private class Sendmensage extends AbstractAction {
 		private int i;
 		public Sendmensage(int i) {
@@ -311,6 +308,7 @@ public class Clientframe extends JFrame {
 			putValue(NAME, "send");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			 try {
 				 String msg = textFieldmen.getText();
@@ -332,6 +330,7 @@ public class Clientframe extends JFrame {
 			putValue(NAME, "Enter");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			
 			setGameplay();
