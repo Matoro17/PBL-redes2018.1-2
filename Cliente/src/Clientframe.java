@@ -163,7 +163,6 @@ public class Clientframe extends JFrame {
 		
 		lblPlayers = new JLabel("players");
 		panel_3.add(lblPlayers);
-
 		
 		btnConectar = new JButton("Conectar");
 		btnConectar.setAction(action_2);
@@ -184,28 +183,6 @@ public class Clientframe extends JFrame {
 		peinalmen.add(textFieldmen);
 		textFieldmen.setColumns(10);
 		
-
-		
-		btnConectar = new JButton("Conectar");
-		btnConectar.setAction(action_2);
-		panel_3.add(btnConectar);
-		panel_3.setVisible(false);
-		
-		peinalmen = new JPanel();
-		peinalmen.setBounds(10, 11, 794, 544);
-		contentPane.add(peinalmen);
-		peinalmen.setLayout(null);
-		
-		mensagem = new JLabel("text");
-		mensagem.setBounds(30, 27, 46, 14);
-		peinalmen.add(mensagem);
-		
-		textFieldmen = new JTextField();
-		textFieldmen.setBounds(31, 46, 86, 20);
-		peinalmen.add(textFieldmen);
-		textFieldmen.setColumns(10);
-		
-
 		btnSend = new JButton("send");
 		btnSend.setAction(Sendmensage);
 		btnSend.setBounds(34, 77, 89, 23);
