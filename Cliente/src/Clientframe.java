@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import java.awt.event.ActionListener;
 
 public class Clientframe extends JFrame {
 
@@ -41,10 +42,10 @@ public class Clientframe extends JFrame {
 	private JLabel lblIpUdp;
 	private JPanel panel_2;
 	private JLabel lblNewLabel;
+	private JButton btnLogin;
 
 	private JLabel lblPlayers;
-	private final Action ServerLists = new Serverlists();
-	private final Action Enterroom = new EnterRoom();
+	private final Action ServerLists = new Serverlists(this.contentPane);
 	public String[] listadesalas;
 	
 	private JLabel titulo;
@@ -90,7 +91,9 @@ public class Clientframe extends JFrame {
 		txtNome.setVisible(false);
 		txtPorta.setVisible(false);
 		txtIpServidor.setVisible(false);
-		
+		titulo.setVisible(false);
+		btnLogin.setVisible(false);
+		System.out.println("terminou o setGameplay");
 		
 		
 	}
@@ -158,7 +161,11 @@ public class Clientframe extends JFrame {
 		panel_2.setBounds(12, 34, 423, 374);
 		panel_1.add(panel_2);
 		
-		JButton btnLogin = new JButton("login");
+		btnLogin = new JButton("login");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnLogin.setAction(ServerLists);
 		btnLogin.setBounds(112, 359, 97, 25);
 		contentPane.add(btnLogin);
@@ -173,7 +180,9 @@ public class Clientframe extends JFrame {
 
 
 	private class Serverlists extends AbstractAction {
-		public Serverlists() {
+		JPanel panel;
+		public Serverlists(JPanel panel) {
+			this.panel = panel;
 			putValue(NAME, "Login");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
@@ -190,6 +199,7 @@ public class Clientframe extends JFrame {
 				listadesalas = lista.split("/");
 				Roomlist = new JPanel[listadesalas.length];
 				btnConectar = new JButton[listadesalas.length];
+				
 				for(int i=0;i<listadesalas.length;i++){
 					Roomlist[i] = new JPanel();
 					Roomlist[i].setLayout(new GridLayout(0, 5, 0, 0));
@@ -217,7 +227,8 @@ public class Clientframe extends JFrame {
 					Roomlist[i].add(lblPlayers);
 					
 					btnConectar[i] = new JButton("Conectar");
-					btnConectar[i].setAction(Enterroom);
+					System.out.println(part[5]);
+					btnConectar[i].setAction(new EnterRoom(part[2], Integer.parseInt(part[5])));
 					Roomlist[i].add(btnConectar[i]);
 					lblId.setText(part[0]);
 					lblIp.setText(part[1]);
@@ -225,6 +236,7 @@ public class Clientframe extends JFrame {
 					lblPlayers.setText(part[3]+"/"+part[4]);
 					lblPorta.setText(part[5]);
 					panel_2.add(Roomlist[i]);
+					panel_2.repaint();
 				}
 				
 				
@@ -249,34 +261,23 @@ public class Clientframe extends JFrame {
 	
 	
 	private class EnterRoom extends AbstractAction {
-		public EnterRoom() {
+		String ip;
+		int port;
+		JPanel panel;
+		public EnterRoom(String ip, int port) {
+			this.ip = ip;
+			this.port = port;
 			putValue(NAME, "Enter");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			String ip = null;
-			int port = 0;
-			for(int i=0;i<Roomlist.length;i++){
-				
-				for (Component componente : Roomlist[i].getComponents()) {
-			        if (componente instanceof JLabel) {
-			           JLabel tempo = (JLabel) componente;
-			           String ipcode[] = tempo.getText().split(".");
-			           if(ipcode[0].equals("235")){
-			        	   ip=tempo.getText();
-			           }
-			           if(tempo.getText().length() == 5){
-			        	   port = Integer.parseInt(tempo.getText());
-			           }
-			        }
-			    }
-			}
+			
 			setGameplay();
-			GameScreen frame;
 			try {
-				frame = new GameScreen(ip,port);
+				GameScreen frame = new GameScreen(this.ip,this.port);
 				contentPane.add(frame);
 				frame.setVisible(true);
+				
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

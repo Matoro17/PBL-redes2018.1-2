@@ -23,14 +23,14 @@ public class Server {
 			ServerSocket serversocket = new ServerSocket(portaserver);
 			 System.out.println("Servidor ativo");
 			 System.out.println("IP: " + InetAddress.getLocalHost().getHostAddress());
-
-			while(true){
-				Socket socket = serversocket.accept();
-				new Thread(new Client(socket,salas)).start();
-				for(int i=0; i<salas.size();i++) {
+			 for(int i=0; i<salas.size();i++) {
 					Sala temp = salas.get(i);
 					new Thread(new Listener(temp.getIp(),temp.getPorta(),temp)).start();
 				}
+			while(true){
+				Socket socket = serversocket.accept();
+				new Thread(new Client(socket,salas)).start();
+				
 			}
 			
 			
@@ -49,6 +49,7 @@ class Listener implements Runnable {
     private String ip;
     private int port;
     private Sala sala;
+    private boolean runing = false;
     
 	public Listener(String ip2, int port2, Sala sala) {
 		this.ip = ip2;
@@ -77,21 +78,27 @@ class Listener implements Runnable {
 	        InetAddress group = InetAddress.getByName(this.ip);
 	        socket.joinGroup(group);
 	        while (true) {
-	        	if(sala.getQuantidade()>1){
-	        		multicast("dices/"+ new Dices().randomize().toString());
-	        	}
+	        	
 	        	
 	            DatagramPacket packet = new DatagramPacket(buf, buf.length);
 	            socket.receive(packet);
 	            String received = new String(packet.getData(), 0, packet.getLength());
 	            
 	            String[] recebido = received.split("/");
-	            if ("end".equals(recebido[0])) {
-	            	break;
-	            }
-	            else if("player".equals(recebido[0])){
+	            if("player".equals(recebido[0])){
 	            	sala.setJogadores(recebido[1]);
 	            }
+	            if(sala.getQuantidade()>1){
+	            	if(!runing){
+	            		multicast("dices/"+ new Dices().randomize().toString());
+	            		runing = true;
+	            	}
+	            }
+	            if ("end".equals(recebido[0])) {
+	            	runing = false;
+	            	break;
+	            }
+	            
 	            
 	        }
 	        socket.leaveGroup(group);
@@ -100,6 +107,8 @@ class Listener implements Runnable {
 			System.out.println(e.getMessage());
 		}
 	}
+
+
 }
 
 /*

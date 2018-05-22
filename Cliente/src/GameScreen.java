@@ -1,6 +1,5 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
@@ -19,10 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class GameScreen extends JFrame {
+public class GameScreen extends JPanel {
 	private JButton[] btnNewButton;
 	private static HashMap<Integer, String> dicionario;
 	private JPanel contentPane;
@@ -67,13 +67,14 @@ public class GameScreen extends JFrame {
 	    InetAddress group;
 	    byte[] buf;
 		        socket = new DatagramSocket();
-		        group = InetAddress.getByName(ip);
+		        group = InetAddress.getByName(this.ip);
 		        buf = multicastMessage.getBytes();
 		 
 		        DatagramPacket packet = new DatagramPacket(buf, buf.length, group, port);
 		        socket.send(packet);
 		        socket.close();
 	}
+	
 	
 	/**
 	 * Create the frame.
@@ -88,23 +89,16 @@ public class GameScreen extends JFrame {
 		this.port = port;
 		new Thread(escutador = new Listener(ip,port)).start();
 		
-		while(!ready){
-			this.ready = escutador.getReady();
-			multicast("player/"+nome+"/"+"ready");
-		}
-		new Reminder(60);
 		
 		
 		
 		
 		
 		Dimension buto = new Dimension(50, 50);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
 		
 		JPanel Dices = new JPanel();
 		contentPane.add(Dices, BorderLayout.CENTER);
@@ -118,27 +112,46 @@ public class GameScreen extends JFrame {
 
 		btnNewButton = new JButton[16];
 		
-		
-		
-		
-		String[] alea = escutador.getDados();
+		GameScreen este = this;
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(!ready){
+					
+					este.ready = escutador.getReady();
+					try {
+						multicast("player/"+nome+"/"+"ready");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				new Reminder(60);
 				
+				String[] alea = escutador.getDados();
+						
+				
+				
+				
+				
+				for (int j = 0; j < alea.length; j++) {
+					btnNewButton[j] = new JButton();
+					btnNewButton[j].setText(alea[j]);
+					btnNewButton[j].setHorizontalAlignment(SwingConstants.LEFT);
+					btnNewButton[j].setPreferredSize(buto);
+					JButton temp = btnNewButton[j];
+					btnNewButton[j].addActionListener(l -> {
+						palavra.setText(palavra.getText()+temp.getText());
+						temp.setEnabled(false);
+					});;
+					panel_2.add(btnNewButton[j]);
+				}
+				
+			}
+		}).start();
 		
-		
-		
-		
-		for (int j = 0; j < alea.length; j++) {
-			btnNewButton[j] = new JButton();
-			btnNewButton[j].setText(alea[j]);
-			btnNewButton[j].setHorizontalAlignment(SwingConstants.LEFT);
-			btnNewButton[j].setPreferredSize(buto);
-			JButton temp = btnNewButton[j];
-			btnNewButton[j].addActionListener(l -> {
-				palavra.setText(palavra.getText()+temp.getText());
-				temp.setEnabled(false);
-			});;
-			panel_2.add(btnNewButton[j]);
-		}
+
 
 		JPanel Checkpanel = new JPanel();
 		contentPane.add(Checkpanel, BorderLayout.SOUTH);
