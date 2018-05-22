@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -45,16 +46,13 @@ public class Clientframe extends JFrame {
 	private final Action ServerLists = new Serverlists();
 	private final Action Enterroom = new EnterRoom();
 	public String[] listadesalas;
-	private JTextField textFieldmen;
 	
-	private JPanel[] peinalmen;
-	private JLabel[] mensagem;
-	private JButton[] btnSend;
-	private JLabel[] coming;
-	private JLabel[] titulo;
+	private JLabel titulo;
 	private JButton[] btnEntrar;
+	private JPanel[] Roomlist;
+	private JButton[] btnConectar;
 	
-	private static int estado = 0;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -69,29 +67,7 @@ public class Clientframe extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				while(true){
-					if(estado == 0){
-						
-					}
-					if(estado == 1){
-
-						while(estado == 1) {
-					        try {       
-					          MulticastSocket mcs = new MulticastSocket(12347);
-					          InetAddress grp = InetAddress.getByName("239.0.0.1");
-					          mcs.joinGroup(grp);
-					          byte rec[] = new byte[256];
-					          DatagramPacket pkg = new DatagramPacket(rec, rec.length);
-					          mcs.receive(pkg);
-					          String data = new String(pkg.getData());
-					          System.out.println("Dados recebidos:" + data);
-					      }
-					      catch(Exception e) {
-					        System.out.println("Erro: " + e.getMessage()); 
-					      } 
-					    }
-					}
-				}
+				
 			}
 		});
 	}
@@ -103,30 +79,20 @@ public class Clientframe extends JFrame {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
-	public void setMenu(){
-		estado = 0;
-		
-	}
+
 	
 	public void setGamelist(){
 		
 	}
 	
 	public void setGameplay(){
-		estado = 1;
 		panel.setVisible(false);
 		txtNome.setVisible(false);
 		txtPorta.setVisible(false);
 		txtIpServidor.setVisible(false);
-		titulo.setVisible(false);
-		btnEntrar.setVisible(false);
 		
-		peinalmen.setVisible(true);
-		mensagem.setVisible(true);
-		textFieldmen.setVisible(true);
-		btnSend.setVisible(true);
-		coming.setVisible(true);
+		
+		
 	}
 
 	/**
@@ -164,10 +130,6 @@ public class Clientframe extends JFrame {
 		contentPane.add(txtNome);
 		txtNome.setColumns(10);
 		
-		btnEntrar = new JButton("Entrar");
-		btnEntrar.setAction(ServerLists);
-		btnEntrar.setBounds(113, 359, 97, 25);
-		contentPane.add(btnEntrar);
 		
 		panel = new JPanel();
 		panel.setBounds(340, 93, 447, 421);
@@ -196,6 +158,11 @@ public class Clientframe extends JFrame {
 		panel_2.setBounds(12, 34, 423, 374);
 		panel_1.add(panel_2);
 		
+		JButton btnLogin = new JButton("login");
+		btnLogin.setAction(ServerLists);
+		btnLogin.setBounds(112, 359, 97, 25);
+		contentPane.add(btnLogin);
+		
 		
 		
 		
@@ -207,7 +174,7 @@ public class Clientframe extends JFrame {
 
 	private class Serverlists extends AbstractAction {
 		public Serverlists() {
-			putValue(NAME, "Enviado");
+			putValue(NAME, "Login");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
@@ -221,13 +188,13 @@ public class Clientframe extends JFrame {
 				String lista;
 				lista = input.readUTF();
 				listadesalas = lista.split("/");
-				JPanel[] Roomlist = new JPanel[listadesalas.length];
-				JButton[] btnConectar = new JButton[listadesalas.length];
-				
+				Roomlist = new JPanel[listadesalas.length];
+				btnConectar = new JButton[listadesalas.length];
 				for(int i=0;i<listadesalas.length;i++){
-					
-					panel_2.add(Roomlist[i]);
+					Roomlist[i] = new JPanel();
 					Roomlist[i].setLayout(new GridLayout(0, 5, 0, 0));
+
+					Roomlist[i].setVisible(true);
 					JLabel lblId;
 					JLabel lblNome;
 					JLabel lblIp;
@@ -257,32 +224,7 @@ public class Clientframe extends JFrame {
 					lblNome.setText(part[2]);
 					lblPlayers.setText(part[3]+"/"+part[4]);
 					lblPorta.setText(part[5]);
-					
-					peinalmen = new JPanel();
-					peinalmen.setBounds(10, 11, 794, 544);
-					contentPane.add(peinalmen);
-					peinalmen.setLayout(null);
-					
-					mensagem = new JLabel("text");
-					mensagem.setBounds(30, 27, 46, 14);
-					peinalmen.add(mensagem);
-					
-					textFieldmen = new JTextField();
-					textFieldmen.setBounds(31, 46, 86, 20);
-					peinalmen.add(textFieldmen);
-					textFieldmen.setColumns(10);
-					
-					btnSend[i] = new JButton[listadesalas.length];
-					btnSend.setAction(new Sendmensage(i));
-					btnSend.setBounds(34, 77, 89, 23);
-					peinalmen.add(btnSend);
-					
-					coming = new JLabel("New label");
-					coming.setBounds(161, 31, 46, 14);
-					peinalmen.add(coming);
-					peinalmen.setVisible(false);
-					
-					Roomlist[i].setVisible(true);
+					panel_2.add(Roomlist[i]);
 				}
 				
 				
@@ -303,28 +245,7 @@ public class Clientframe extends JFrame {
 		}
 	}
 	
-	
-	private class Sendmensage extends AbstractAction {
-		private int i;
-		public Sendmensage(int i) {
-			this.i =i;
-			putValue(NAME, "send");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			 try {
-				 String msg = textFieldmen.getText();
-				 byte[] bty = msg.getBytes(); 
-				 String[] part = listadesalas[i].split(",");
-				 InetAddress group = InetAddress.getByName(part[1]);
-			      DatagramSocket ds = new DatagramSocket();
-			      DatagramPacket pkg = new DatagramPacket(bty, bty.length, group, Integer.parseInt(part[5]));  
-			      ds.send(pkg);       
-			}catch(Exception e1) {
-			      System.out.println("Nao foi possivel enviar a mensagem");    
-			}
-		}
-	}
+
 	
 	
 	private class EnterRoom extends AbstractAction {
@@ -333,9 +254,33 @@ public class Clientframe extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			
+			String ip = null;
+			int port = 0;
+			for(int i=0;i<Roomlist.length;i++){
+				
+				for (Component componente : Roomlist[i].getComponents()) {
+			        if (componente instanceof JLabel) {
+			           JLabel tempo = (JLabel) componente;
+			           String ipcode[] = tempo.getText().split(".");
+			           if(ipcode[0].equals("235")){
+			        	   ip=tempo.getText();
+			           }
+			           if(tempo.getText().length() == 5){
+			        	   port = Integer.parseInt(tempo.getText());
+			           }
+			        }
+			    }
+			}
 			setGameplay();
-			
+			GameScreen frame;
+			try {
+				frame = new GameScreen(ip,port);
+				contentPane.add(frame);
+				frame.setVisible(true);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			
 		}

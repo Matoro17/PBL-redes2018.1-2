@@ -1,13 +1,16 @@
+import java.util.ArrayList;
 
 public class Sala {
 	private int Id;
 	private String ip;
 	private int porta;
 	private String nome;
-	private int quantidade, limite;
+	private ArrayList<String> jogadores;
+	private int limite;
 	
 	
 	public Sala(int id,String ip, String nome, int limite, int port){
+		jogadores = new ArrayList<>();
 		this.Id = id;
 		this.ip = ip;
 		this.nome = nome;
@@ -15,8 +18,19 @@ public class Sala {
 		this.porta = port;
 	}
 	
+	public ArrayList<String> setJogadores(String player){
+		for(int i=0; i<jogadores.size();i++) {
+			String temp = jogadores.get(i);
+			if (temp.equals(player)) {
+				break;
+			}
+		}	
+		jogadores.add(player);
+		return jogadores;
+	}
+	
 	public String getTudo(){
-		return Id+","+ip+","+nome+","+quantidade+","+limite+","+porta;
+		return Id+","+ip+","+nome+","+jogadores.size()+","+limite+","+porta;
 	}
 
 	public int getId() {
@@ -50,12 +64,7 @@ public class Sala {
 
 
 	public int getQuantidade() {
-		return quantidade;
-	}
-
-
-	public void setQuantidade(int quantidade) {
-		this.quantidade = quantidade;
+		return jogadores.size();
 	}
 
 
@@ -63,6 +72,9 @@ public class Sala {
 		return limite;
 	}
 
+	public int getPorta(){
+		return porta;
+	}
 
 	public void setLimite(int limite) {
 		this.limite = limite;

@@ -1,29 +1,26 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.BoxLayout;
-import java.awt.FlowLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import net.miginfocom.swing.MigLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JTextPane;
 
 public class GameScreen extends JFrame {
 	private JButton[] btnNewButton;
@@ -31,31 +28,75 @@ public class GameScreen extends JFrame {
 	private JPanel contentPane;
 	private static int pontuacao;
 	private static ArrayList<String> escolidas;
+	private Timer timer;
+	private boolean ready = false;
+	private Listener escutador;
+	private String ip;
+	private int port;
+	private String nome;
+	
+	public class Reminder {
+	    Timer timer;
 
+	    public Reminder(int seconds) {
+	        timer = new Timer();
+	        timer.schedule(new RemindTask(), seconds*1000);
+	    }
+
+	    class RemindTask extends TimerTask {
+	        public void run() {
+	            try {
+					multicast("player/"+nome+"/"+escolidas.toString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            System.out.println("acabou o tempo");
+	            escolidas = new ArrayList<>();
+	            timer.cancel(); //Terminate the timer thread
+	        }
+	    }
+
+	}
+	public void setReady(boolean set){
+		ready = set;
+	}
+	
+	public void multicast(String multicastMessage) throws IOException {
+		DatagramSocket socket;
+	    InetAddress group;
+	    byte[] buf;
+		        socket = new DatagramSocket();
+		        group = InetAddress.getByName(ip);
+		        buf = multicastMessage.getBytes();
+		 
+		        DatagramPacket packet = new DatagramPacket(buf, buf.length, group, port);
+		        socket.send(packet);
+		        socket.close();
+	}
+	
 	/**
-	 * Launch the application.
+	 * Create the frame.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public GameScreen(String ip, int port) throws IOException {
 		pontuacao = 0;
 		dicionario = new HashMap<>();
 		escolidas = new ArrayList<>();
 		carregardicionario();
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GameScreen frame = new GameScreen();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public GameScreen() {
+		this.ip = ip;
+		this.port = port;
+		new Thread(escutador = new Listener(ip,port)).start();
+		
+		while(!ready){
+			this.ready = escutador.getReady();
+			multicast("player/"+nome+"/"+"ready");
+		}
+		new Reminder(60);
+		
+		
+		
+		
 		
 		Dimension buto = new Dimension(50, 50);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +117,16 @@ public class GameScreen extends JFrame {
 		panel_2.setLayout(new GridLayout(4, 4, 0, 0));
 
 		btnNewButton = new JButton[16];
-		String[] alea = new Dices().randomize();
+		
+		
+		
+		
+		String[] alea = escutador.getDados();
+				
+		
+		
+		
+		
 		for (int j = 0; j < alea.length; j++) {
 			btnNewButton[j] = new JButton();
 			btnNewButton[j].setText(alea[j]);
