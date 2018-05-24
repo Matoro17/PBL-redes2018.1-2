@@ -19,6 +19,10 @@ import view.Main;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 public class Jogo implements Initializable {
@@ -71,11 +75,16 @@ public class Jogo implements Initializable {
     private Button limpar;
 
     private Timeline atualizar;
+    
+    private HashMap<String , HashSet<String>> players;
 
+    private HashMap<String, Integer> pontuacao;
+    
     private int timer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    	players = new HashMap<>();
         timer = 180;
         String[] letras = Controller.info.split(",");
 
@@ -177,16 +186,27 @@ public class Jogo implements Initializable {
             if (timer >= 0) {
                 tempo.setText(String.format("%2d:%02d", timer / 60, timer % 60));
                 timer--;
+                //UDP.enviarMensagem(String.format("time,%s,%d;",UDP.nomeJogador(), timer).getBytes());
+                
+                if(timer % 5 == 0) {
+	                checkPlayers();
+                }
             } else {
                 atualizar.stop();
+                checkPlayers();
+                String winner = calcularVencedor();
+                if(winner.equals(UDP.nomeJogador())) {
+                	 palavra.setText("Você Venceu"+pontuacao.get(winner)+"_Pontos");
+                }else {
+                	palavra.setText(winner+pontuacao.get(winner)+"_Pontos");
+                }
+                limpar.setDisable(true);
+                confirmar.setDisable(true);
                 //Aqui tu vai verificar o resultado
                 //Tudo que e enviado e recebido pelo UDP e multicast pode ser pego pelo metodo
                 //UDP.lerDados()
                 //Cada item e separada por ; mensagens sao de dois tipos
-                String[] recebido = UDP.lerDados().split(";");
-                if(){
-                	
-                }
+                
 
                 //tipo 1: nome,nome do jogador          pra saber quem ta na sala
                 //tipo2: palavra,nome do jogador, palavra digitada
@@ -203,14 +223,30 @@ public class Jogo implements Initializable {
 
         confirmar.setOnAction(event -> {
             //Aqui tu vai imperdier as mesmas palavra sejam digitada
-            if (Dicionario.validarPalavra(palavra.getText())) {
-                palavras.getItems().add(palavra.getText());
-                limpar.getOnAction();
+        	if(!checarpalavrasDoJogo(palavra.getText())) {
+        		
+	            if (Dicionario.validarPalavra(palavra.getText())) {
+	            	if(!players.containsKey(UDP.nomeJogador())) {
+	            		players.put(UDP.nomeJogador(), new HashSet<>());
+	            		players.get(UDP.nomeJogador()).add(palavra.getText());
+	            	}else {
+	            		if(!players.get(UDP.nomeJogador()).contains(palavra.getText())) {
+	            			players.get(UDP.nomeJogador()).add(palavra.getText());
 
-                //Aqui tua palavra e enviada, tu tambem recebe entao so se preocupa em
-                //armazena os dados lidos do metodo lerDados
-                UDP.enviarMensagem(String.format("palavra,%s,%s;",UDP.nomeJogador(), palavra.getText()).getBytes());
-            }
+	    	                palavras.getItems().add(palavra.getText());
+	            		}
+	            	}
+	            	
+	                limpar.getOnAction();
+	
+	                //Aqui tua palavra e enviada, tu tambem recebe entao so se preocupa em
+	                //armazena os dados lidos do metodo lerDados
+
+	               
+	                UDP.enviarMensagem(String.format("palavra,%s,%s;",UDP.nomeJogador(), palavra.getText()).getBytes());
+	                
+	            }
+        	}
         });
 
         voltar.setOnAction(event -> {
@@ -221,5 +257,61 @@ public class Jogo implements Initializable {
             }
         });
     }
+    
+    private void checkPlayers(){
+    	String[] recebido = UDP.lerDados().split(";");
+        for(int i=0;i<recebido.length;i++) {
+        	String[] line = recebido[i].split(",");
+        	if (line[0].equals("jogador")) {
+        		if(!players.containsKey(line[1])) {
+        			players.put(line[1], new HashSet<>());
+        			jogadores.getItems().add(line[1]);
+        		}							
+			}else if(line[0].equals("palavra")){
+				if(players.containsKey(line[1])) {
+					if(!players.get(line[1]).contains(line[2])) {
+						players.get(line[1]).add(line[2]);
+					}
+				}
+			}
+			else if(line[0].equals("time")) {
+				if(Integer.parseInt(line[2]) < this.timer) {
+					this.timer = Integer.parseInt(line[2]);
+				}
+			}
+        }
+    }
+    
+    private String calcularVencedor() {
+    	pontuacao = new HashMap<>();
+    	
+    	for (String entry: players.keySet()) {
+			int point = 0;
+			
+			for (String word :players.get(entry)) {
+				point += word.length();
+			}
+			pontuacao.put(entry, point);
+		}
+    	String winner = null;
+    	int maior = 0;
+    	for (String ponto : pontuacao.keySet()) {
+			if(pontuacao.get(ponto)>maior) {
+				maior = pontuacao.get(ponto);
+				winner = ponto;
+			}
+		}
+    	return winner;
+    }
+
+	private boolean checarpalavrasDoJogo(String word) {
+		for (String entry: players.keySet()) {
+			if (entry.contains(word)) {
+				System.out.println("palavra ja existe no hash");
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

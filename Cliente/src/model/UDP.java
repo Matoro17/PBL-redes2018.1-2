@@ -91,12 +91,6 @@ public class UDP {
                                 socket.receive(packet);
                                 dados.append(new String(packet.getData(), 0, packet.getLength())).append(";");
 
-                                //mostra tudo recebido ate o que tu enviou
-                                //se tu nao pega os dados eles acumulam nesse buffer ai tu escolher
-                                //deixa pro final ou ir pegadndo
-                                //mas vai pegando os nomes do player
-                                //salva em uma estrurua tipo set
-                                //que nao salva nomes repetidos por padrao
                                 System.out.println(dados);
                             }
                         } else if (grupo != null) {

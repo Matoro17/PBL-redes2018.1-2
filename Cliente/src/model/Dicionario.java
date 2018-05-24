@@ -21,7 +21,8 @@ public class Dicionario {
     }
 
     public static boolean validarPalavra(String palavra) {
-        return dicionario != null && palavra.length() <= 16 && dicionario.contains(palavra);
+    	String temp = palavra.toLowerCase();
+        return dicionario.contains(temp);
     }
 
 }
