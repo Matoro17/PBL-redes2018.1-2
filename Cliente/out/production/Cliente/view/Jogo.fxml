@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="666.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Jogo">
+   <children>
+      <Button fx:id="letra1" layoutX="159.0" layoutY="14.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra5" layoutX="247.0" layoutY="14.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra9" layoutX="335.0" layoutY="14.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra13" layoutX="423.0" layoutY="14.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra2" layoutX="158.0" layoutY="102.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra6" layoutX="246.0" layoutY="102.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra10" layoutX="334.0" layoutY="102.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra14" layoutX="422.0" layoutY="102.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra3" layoutX="158.0" layoutY="190.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra7" layoutX="246.0" layoutY="190.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra11" layoutX="334.0" layoutY="190.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra15" layoutX="422.0" layoutY="190.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra4" layoutX="158.0" layoutY="278.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra8" layoutX="246.0" layoutY="278.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra12" layoutX="334.0" layoutY="278.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="letra16" layoutX="422.0" layoutY="278.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="76.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Button>
+      <Button fx:id="confirmar" layoutX="161.0" layoutY="440.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="227.0" text="Confirmar" />
+      <TextField fx:id="palavra" editable="false" layoutX="157.0" layoutY="368.0" prefHeight="55.0" prefWidth="342.0">
+         <font>
+            <Font size="24.0" />
+         </font></TextField>
+      
+      <Button fx:id="limpar" layoutX="409.0" layoutY="440.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="89.0" text="Limpar" />
+      <ListView fx:id="jogadores" layoutX="19.0" layoutY="14.0" prefHeight="247.0" prefWidth="120.0" />
+      <TextField fx:id="tempo" alignment="CENTER" editable="false" layoutX="19.0" layoutY="280.0" prefHeight="30.0" prefWidth="120.0">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+      <ListView fx:id="palavras" layoutX="522.0" layoutY="14.0" prefHeight="463.0" prefWidth="120.0" />
+      <Button fx:id="voltar" layoutX="19.0" layoutY="321.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="59.0" text="Voltar" />
+   </children>
+</AnchorPane>
