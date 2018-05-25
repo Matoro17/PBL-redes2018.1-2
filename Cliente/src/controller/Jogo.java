@@ -202,27 +202,16 @@ public class Jogo implements Initializable {
                 }
                 limpar.setDisable(true);
                 confirmar.setDisable(true);
-                //Aqui tu vai verificar o resultado
-                //Tudo que e enviado e recebido pelo UDP e multicast pode ser pego pelo metodo
-                //UDP.lerDados()
-                //Cada item e separada por ; mensagens sao de dois tipos
-                
-
-                //tipo 1: nome,nome do jogador          pra saber quem ta na sala
-                //tipo2: palavra,nome do jogador, palavra digitada
-
-                //o primeiro argumento e fixo
-                //coloque pra da println olha o console
-                //Boa sorte
             }
         }));
 
         atualizar.setCycleCount(Timeline.INDEFINITE);
         atualizar.play();
 
-
+        /*
+         * Ação do botão de envio de palavra e checagem da mesma
+         */
         confirmar.setOnAction(event -> {
-            //Aqui tu vai imperdier as mesmas palavra sejam digitada
         	if(!checarpalavrasDoJogo(palavra.getText())) {
         		
 	            if (Dicionario.validarPalavra(palavra.getText())) {
@@ -238,9 +227,6 @@ public class Jogo implements Initializable {
 	            	}
 	            	
 	                limpar.getOnAction();
-	
-	                //Aqui tua palavra e enviada, tu tambem recebe entao so se preocupa em
-	                //armazena os dados lidos do metodo lerDados
 
 	               
 	                UDP.enviarMensagem(String.format("palavra,%s,%s;",UDP.nomeJogador(), palavra.getText()).getBytes());
@@ -248,7 +234,10 @@ public class Jogo implements Initializable {
 	            }
         	}
         });
-
+        
+        /*
+         * Botão para voltar para a tela de salas do servidor
+         */
         voltar.setOnAction(event -> {
             try {
                 Main.tela.setScene(new Scene(FXMLLoader.load(Main.class.getResource("Inicio.fxml"))));
@@ -257,7 +246,9 @@ public class Jogo implements Initializable {
             }
         });
     }
-    
+    /*
+     * Metodo para tratar os dados lidos pelo endereço de multicast
+     */
     private void checkPlayers(){
     	String[] recebido = UDP.lerDados().split(";");
         for(int i=0;i<recebido.length;i++) {
@@ -281,7 +272,9 @@ public class Jogo implements Initializable {
 			}
         }
     }
-    
+    /*
+     * Metodo para checar todos os jogadores e suas palvras salvas no cliente e calcular quem deve ser o vencedor
+     */
     private String calcularVencedor() {
     	pontuacao = new HashMap<>();
     	
@@ -303,7 +296,10 @@ public class Jogo implements Initializable {
 		}
     	return winner;
     }
-
+    
+    /*
+     * Metodo para checar se alguma palavra já foi dita no jogo
+     */
 	private boolean checarpalavrasDoJogo(String word) {
 		for (String entry: players.keySet()) {
 			if (entry.contains(word)) {

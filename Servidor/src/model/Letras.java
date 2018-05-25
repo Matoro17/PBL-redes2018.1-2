@@ -22,7 +22,9 @@ public class Letras {
 	
 	private static String[][] dicess= {dice0, dice1, dice2, dice3, dice4, dice5, dice6, dice7, dice8, dice9, dice10, dice11, dice12, dice13, dice14, dice15};
 	
-	
+	/*
+	 * Randomiza os dados gravados e retorna um vetor de String, com as letras em cada posição
+	 */
 	public static String[] randomize() {
 		Random gerar = new Random();
 		String[] ditto = new String[16];
@@ -32,6 +34,9 @@ public class Letras {
 		return ditto;
 	}
 	
+	/*
+	 * Retorna as letras randomizadas com uma unica string separada por virgulas, para ser enviada pelo servidor
+	 */
     public static String getLetras() {
     	String[] temp = randomize();
     	String go = "";

@@ -68,7 +68,9 @@ public class UDP {
             }
         }
     }
-
+    /*
+     * Metodo principal do multicast, onde pela criação de Thread é escutado a porta 9798, e a chacagem se os endereços existem em multicast
+     */
     public synchronized static void iniciarMulticast() {
         if (receberPalavras == null) {
             receberPalavras = new Thread(() -> {
@@ -115,7 +117,9 @@ public class UDP {
     public synchronized static boolean existeDados() {
         return dados.length() > 0;
     }
-
+    /*
+     * Leitura de dados do Multicast, trabalhando com buffer para evitar redundância de informações
+     */
     public synchronized static String lerDados() {
         if (existeDados()) {
             String temp = dados.toString();
